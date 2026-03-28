@@ -336,11 +336,38 @@ function App() {
   }
 
   const toggleSplitView = () => {
+    if (workspace.paneMode === 'split') {
+      setWorkspace('paneMode', 'single')
+      return
+    }
+
+    if (workspace.tabs.length === 1) {
+      const title = `Untitled ${workspace.nextTabNumber}`
+      const tab = createTab(title, '')
+
+      setWorkspace(
+        produce((draft) => {
+          draft.tabs.push(tab)
+          draft.nextTabNumber += 1
+          draft.paneMode = 'split'
+          draft.panes.secondary.tabId = tab.id
+        }),
+      )
+      showNotice('info', 'Split mode opened with a second tab')
+      return
+    }
+
     setWorkspace(
       produce((draft) => {
-        draft.paneMode = draft.paneMode === 'split' ? 'single' : 'split'
-        if (!draft.panes.secondary.tabId) {
-          draft.panes.secondary.tabId = draft.panes.primary.tabId
+        draft.paneMode = 'split'
+
+        if (
+          !draft.panes.secondary.tabId ||
+          draft.panes.secondary.tabId === draft.panes.primary.tabId
+        ) {
+          draft.panes.secondary.tabId =
+            draft.tabs.find((tab) => tab.id !== draft.panes.primary.tabId)?.id ??
+            draft.panes.primary.tabId
         }
       }),
     )
@@ -531,6 +558,15 @@ function App() {
       </header>
 
       <section class="workspace-surface px-4 py-4 sm:px-5 sm:py-5 lg:px-8">
+        <Show when={workspace.paneMode === 'split'}>
+          <div class="split-banner">
+            <span class="split-banner__label">Split mode</span>
+            <span class="split-banner__text">
+              Left and right panes stay on separate tabs so you can edit independently.
+            </span>
+          </div>
+        </Show>
+
         <div
           class={clsx(
             'grid gap-4',
@@ -557,7 +593,11 @@ function App() {
                   <div class="flex flex-col gap-3 border-b border-[color:var(--border)] px-4 py-3 sm:px-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                       <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-stone-500">
-                        {index() === 0 ? 'Primary pane' : 'Secondary pane'}
+                        {workspace.paneMode === 'split'
+                          ? index() === 0
+                            ? 'Left tab'
+                            : 'Right tab'
+                          : 'Main tab'}
                       </p>
                       <div class="flex flex-wrap items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.16em]">
                         <span

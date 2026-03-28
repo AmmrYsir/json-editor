@@ -7,6 +7,30 @@
   flex: 1;
 }
 
+.split-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(13, 148, 136, 0.18);
+  border-radius: 6px;
+  background: rgba(244, 255, 252, 0.78);
+  padding: 0.5rem 0.75rem;
+  color: rgb(17, 94, 89);
+}
+
+.split-banner__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.split-banner__text {
+  font-size: 0.8rem;
+  color: rgb(68, 64, 60);
+}
+
 .workspace-surface::before {
   content: '';
   position: absolute;
