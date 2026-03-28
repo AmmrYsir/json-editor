@@ -1,28 +1,68 @@
-## Usage
+# JSON Editor
+
+A compact web JSON editor built with Bun, Vite, SolidJS, and Tailwind CSS.
+
+## Features
+
+- Multi-tab editing with inline rename and close actions
+- Split-screen editing with independent left and right tab focus
+- Live JSON validation while typing
+- Format and minify actions
+- Local storage workspace recovery
+- Per-pane search and copy actions
+- Compact editor-first UI
+
+## Stack
+
+- Bun
+- Vite
+- SolidJS
+- Tailwind CSS
+- TypeScript
+
+## Development
+
+Install dependencies:
 
 ```bash
-$ npm install # or pnpm install or yarn install
+bun install
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+Start the development server:
 
-## Available Scripts
+```bash
+bun run dev
+```
 
-In the project directory, you can run:
+Create a production build:
 
-### `npm run dev`
+```bash
+bun run build
+```
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+Preview the production build locally:
 
-### `npm run build`
+```bash
+bun run preview
+```
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
+The app runs on the default Vite dev server at `http://localhost:5173`.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Project Structure
 
-## Deployment
+```text
+src/
+  App.tsx           Main editor workspace
+  App.css           Workspace-specific styling
+  index.css         Global theme and base styles
+  lib/workspace.ts  Tab, pane, validation, and local-storage logic
+```
 
-Learn more about deploying your application with the [documentations](https://vite.dev/guide/static-deploy.html)
+## Split Screen Behavior
+
+When split mode is enabled, the editor prefers a different tab for the second pane so both sides can be edited independently. If only one tab exists, the app creates a second tab automatically for the split workspace.
+
+## Notes
+
+- Workspace state is saved to local storage automatically.
+- `npm run ...` also works because Vite scripts are defined in `package.json`, but Bun is the intended workflow here.
