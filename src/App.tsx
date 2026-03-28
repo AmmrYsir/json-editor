@@ -554,7 +554,7 @@ function App() {
                   class={clsx('pane-shell', workspace.activePane === paneId && 'pane-shell--active')}
                   onClick={() => setActivePane(paneId)}
                 >
-                  <div class="flex flex-col gap-4 border-b border-[color:var(--border)] px-4 py-4 sm:px-5">
+                  <div class="flex flex-col gap-3 border-b border-[color:var(--border)] px-4 py-3 sm:px-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                       <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-stone-500">
                         {index() === 0 ? 'Primary pane' : 'Secondary pane'}
@@ -590,176 +590,178 @@ function App() {
                       </div>
                     </div>
 
-                    <div class="flex gap-1.5 overflow-x-auto pb-1">
-                      <For each={workspace.tabs}>
-                        {(tab) => (
-                          <div
-                            class={clsx(
-                              'pane-tab',
-                              paneTab()?.id === tab.id && 'pane-tab--active',
-                              tabAssignments(tab.id).length > 0 && 'pane-tab--mapped',
-                            )}
-                          >
-                            <Show
-                              when={renamingTabId() === tab.id}
-                              fallback={
-                                <button
-                                  class="flex min-w-0 flex-1 items-center gap-2 text-left"
-                                  onClick={() => assignTabToPane(paneId, tab.id)}
-                                  onDblClick={() => startRenaming(tab)}
-                                >
-                                  <span
-                                    class={clsx(
-                                      'h-2 w-2 shrink-0 rounded-sm',
-                                      tab.validation.status === 'valid' && 'bg-emerald-500',
-                                      tab.validation.status === 'invalid' && 'bg-rose-500',
-                                      tab.validation.status === 'empty' && 'bg-stone-300',
-                                    )}
-                                  />
-                                  <span class="truncate text-[0.8rem] font-medium">{tab.title}</span>
-                                  <Show when={isTabDirty(tab)}>
-                                    <span class="text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-amber-700">
-                                      Draft
-                                    </span>
-                                  </Show>
-                                </button>
-                              }
+                    <div class="pane-controls-row">
+                      <div class="pane-tabs-scroll">
+                        <For each={workspace.tabs}>
+                          {(tab) => (
+                            <div
+                              class={clsx(
+                                'pane-tab',
+                                paneTab()?.id === tab.id && 'pane-tab--active',
+                                tabAssignments(tab.id).length > 0 && 'pane-tab--mapped',
+                              )}
                             >
-                              <input
-                                value={renameDraft()}
-                                onInput={(event) => setRenameDraft(event.currentTarget.value)}
-                                onBlur={() => renameTab(tab.id, renameDraft())}
-                                onKeyDown={(event) => {
-                                  if (event.key === 'Enter') {
-                                    renameTab(tab.id, renameDraft())
-                                  }
-
-                                  if (event.key === 'Escape') {
-                                    batch(() => {
-                                      setRenamingTabId(null)
-                                      setRenameDraft('')
-                                    })
-                                  }
-                                }}
-                                class="min-w-24 flex-1 bg-transparent text-[0.8rem] font-medium text-stone-900 outline-none"
-                              />
-                            </Show>
-
-                            <div class="flex items-center gap-1">
-                              <For each={tabAssignments(tab.id)}>
-                                {(assignedPaneId) => (
-                                  <span class="pane-tab-badge">
-                                    {assignedPaneId === 'primary' ? 'P1' : 'P2'}
-                                  </span>
-                                )}
-                              </For>
-                              <button
-                                class="pane-tab-close"
-                                onClick={() => closeTab(tab.id)}
-                                aria-label={`Close ${tab.title}`}
+                              <Show
+                                when={renamingTabId() === tab.id}
+                                fallback={
+                                  <button
+                                    class="flex min-w-0 flex-1 items-center gap-2 text-left"
+                                    onClick={() => assignTabToPane(paneId, tab.id)}
+                                    onDblClick={() => startRenaming(tab)}
+                                  >
+                                    <span
+                                      class={clsx(
+                                        'h-2 w-2 shrink-0 rounded-sm',
+                                        tab.validation.status === 'valid' && 'bg-emerald-500',
+                                        tab.validation.status === 'invalid' && 'bg-rose-500',
+                                        tab.validation.status === 'empty' && 'bg-stone-300',
+                                      )}
+                                    />
+                                    <span class="truncate text-[0.8rem] font-medium">{tab.title}</span>
+                                    <Show when={isTabDirty(tab)}>
+                                      <span class="text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-amber-700">
+                                        Draft
+                                      </span>
+                                    </Show>
+                                  </button>
+                                }
                               >
-                                ×
-                              </button>
+                                <input
+                                  value={renameDraft()}
+                                  onInput={(event) => setRenameDraft(event.currentTarget.value)}
+                                  onBlur={() => renameTab(tab.id, renameDraft())}
+                                  onKeyDown={(event) => {
+                                    if (event.key === 'Enter') {
+                                      renameTab(tab.id, renameDraft())
+                                    }
+
+                                    if (event.key === 'Escape') {
+                                      batch(() => {
+                                        setRenamingTabId(null)
+                                        setRenameDraft('')
+                                      })
+                                    }
+                                  }}
+                                  class="min-w-24 flex-1 bg-transparent text-[0.8rem] font-medium text-stone-900 outline-none"
+                                />
+                              </Show>
+
+                              <div class="flex items-center gap-1">
+                                <For each={tabAssignments(tab.id)}>
+                                  {(assignedPaneId) => (
+                                    <span class="pane-tab-badge">
+                                      {assignedPaneId === 'primary' ? 'P1' : 'P2'}
+                                    </span>
+                                  )}
+                                </For>
+                                <button
+                                  class="pane-tab-close"
+                                  onClick={() => closeTab(tab.id)}
+                                  aria-label={`Close ${tab.title}`}
+                                >
+                                  ×
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </For>
+                          )}
+                        </For>
 
-                      <button
-                        class="pane-tab pane-tab--create"
-                        onClick={() => createUntitledTab(paneId, '')}
-                        aria-label="Create tab"
-                        title="New tab"
-                      >
-                        <Icon path="M12 5v14M5 12h14" />
-                      </button>
-                    </div>
+                        <button
+                          class="pane-tab pane-tab--create"
+                          onClick={() => createUntitledTab(paneId, '')}
+                          aria-label="Create tab"
+                          title="New tab"
+                        >
+                          <Icon path="M12 5v14M5 12h14" />
+                        </button>
+                      </div>
 
-                    <div class="flex flex-wrap gap-1.5">
-                      <button
-                        class="toolbar-button"
-                        onClick={() => duplicatePaneTab(paneId)}
-                        aria-label="Duplicate tab"
-                        title="Duplicate tab"
-                      >
-                        <Icon path="M9 9h10v10H9zM5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
-                      </button>
-                      <button
-                        class="toolbar-button"
-                        onClick={() => transformPaneTab(paneId, 'format')}
-                        aria-label="Format JSON"
-                        title="Format JSON"
-                      >
-                        <Icon path="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-                      </button>
-                      <button
-                        class="toolbar-button"
-                        onClick={() => transformPaneTab(paneId, 'minify')}
-                        aria-label="Minify JSON"
-                        title="Minify JSON"
-                      >
-                        <Icon path="M4 7h16M7 12h10M10 17h4" />
-                      </button>
-                      <button
-                        class="toolbar-button"
-                        onClick={() => setPaneSearchOpen(paneId, !paneSearch[paneId].open)}
-                        aria-label={paneSearch[paneId].open ? 'Hide search' : 'Search'}
-                        title={paneSearch[paneId].open ? 'Hide search' : 'Search'}
-                      >
-                        <Icon
-                          path={
-                            paneSearch[paneId].open
-                              ? 'M6 6l12 12M18 6L6 18'
-                              : 'M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z'
-                          }
-                        />
-                      </button>
-                      <button
-                        class="toolbar-button"
-                        onClick={() => copyFromPaneTab(paneId, 'raw')}
-                        aria-label="Copy raw JSON"
-                        title="Copy raw JSON"
-                      >
-                        <Icon path="M9 9h10v10H9zM5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
-                      </button>
-                      <button
-                        class="toolbar-button"
-                        onClick={() => copyFromPaneTab(paneId, 'formatted')}
-                        aria-label="Copy formatted JSON"
-                        title="Copy formatted JSON"
-                      >
-                        <Icon path="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-                      </button>
-                      <button
-                        class="toolbar-button"
-                        onClick={() => closeTab(paneTab()?.id ?? '')}
-                        aria-label="Close tab"
-                        title="Close tab"
-                      >
-                        <Icon path="M6 6l12 12M18 6L6 18" />
-                      </button>
-                      <button
-                        class="toolbar-button"
-                        onClick={() => toggleSplitView()}
-                        aria-label={workspace.paneMode === 'split' ? 'Single pane' : 'Split view'}
-                        title={workspace.paneMode === 'split' ? 'Single pane' : 'Split view'}
-                      >
-                        <Icon
-                          path={
-                            workspace.paneMode === 'split'
-                              ? 'M5 5h14v14H5z'
-                              : 'M4 5h16v14H4zM12 5v14'
-                          }
-                        />
-                      </button>
-                      <button
-                        class="toolbar-button toolbar-button--danger"
-                        onClick={() => clearWorkspace()}
-                        aria-label="Reset workspace"
-                        title="Reset workspace"
-                      >
-                        <Icon path="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
-                      </button>
+                      <div class="pane-toolbar">
+                        <button
+                          class="toolbar-button"
+                          onClick={() => duplicatePaneTab(paneId)}
+                          aria-label="Duplicate tab"
+                          title="Duplicate tab"
+                        >
+                          <Icon path="M9 9h10v10H9zM5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+                        </button>
+                        <button
+                          class="toolbar-button"
+                          onClick={() => transformPaneTab(paneId, 'format')}
+                          aria-label="Format JSON"
+                          title="Format JSON"
+                        >
+                          <Icon path="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                        </button>
+                        <button
+                          class="toolbar-button"
+                          onClick={() => transformPaneTab(paneId, 'minify')}
+                          aria-label="Minify JSON"
+                          title="Minify JSON"
+                        >
+                          <Icon path="M4 7h16M7 12h10M10 17h4" />
+                        </button>
+                        <button
+                          class="toolbar-button"
+                          onClick={() => setPaneSearchOpen(paneId, !paneSearch[paneId].open)}
+                          aria-label={paneSearch[paneId].open ? 'Hide search' : 'Search'}
+                          title={paneSearch[paneId].open ? 'Hide search' : 'Search'}
+                        >
+                          <Icon
+                            path={
+                              paneSearch[paneId].open
+                                ? 'M6 6l12 12M18 6L6 18'
+                                : 'M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z'
+                            }
+                          />
+                        </button>
+                        <button
+                          class="toolbar-button"
+                          onClick={() => copyFromPaneTab(paneId, 'raw')}
+                          aria-label="Copy raw JSON"
+                          title="Copy raw JSON"
+                        >
+                          <Icon path="M9 9h10v10H9zM5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+                        </button>
+                        <button
+                          class="toolbar-button"
+                          onClick={() => copyFromPaneTab(paneId, 'formatted')}
+                          aria-label="Copy formatted JSON"
+                          title="Copy formatted JSON"
+                        >
+                          <Icon path="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                        </button>
+                        <button
+                          class="toolbar-button"
+                          onClick={() => closeTab(paneTab()?.id ?? '')}
+                          aria-label="Close tab"
+                          title="Close tab"
+                        >
+                          <Icon path="M6 6l12 12M18 6L6 18" />
+                        </button>
+                        <button
+                          class="toolbar-button"
+                          onClick={() => toggleSplitView()}
+                          aria-label={workspace.paneMode === 'split' ? 'Single pane' : 'Split view'}
+                          title={workspace.paneMode === 'split' ? 'Single pane' : 'Split view'}
+                        >
+                          <Icon
+                            path={
+                              workspace.paneMode === 'split'
+                                ? 'M5 5h14v14H5z'
+                                : 'M4 5h16v14H4zM12 5v14'
+                            }
+                          />
+                        </button>
+                        <button
+                          class="toolbar-button toolbar-button--danger"
+                          onClick={() => clearWorkspace()}
+                          aria-label="Reset workspace"
+                          title="Reset workspace"
+                        >
+                          <Icon path="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
+                        </button>
+                      </div>
                     </div>
 
                     <Show when={paneSearch[paneId].open}>
